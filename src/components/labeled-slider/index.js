@@ -1,4 +1,5 @@
 import { div, label, input } from "@cycle/dom"
+import styles from "./styles.styl"
 
 const intent = domSource =>
   domSource
@@ -24,7 +25,7 @@ const model = (actions$, props$) =>
 
 const view = state$ =>
   state$.map(state =>
-    div(".labeled-slider", [
+    div(`.${styles.labeledSlider}`, [
       label(`${state.label}: ${state.value}`),
       input(".slider", {
         attrs: {
