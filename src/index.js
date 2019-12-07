@@ -2,32 +2,21 @@ import "./styles.css"
 import { run } from "@cycle/run"
 import { makeDOMDriver, div } from "@cycle/dom"
 import xs from "xstream"
-import LabeledSlider from './components/labeled-slider'
+import LabeledSlider from "./components/labeled-slider"
+import CircleDiv from "./view-only-comps/circled-div"
 
-const view = state$ => state$
-  .map(([value, childVDom]) => 
-    div([
-      childVDom,
-      div({
-        style: {
-          backgroundColor: '#58D3D8',
-          width: `${2 * value}px`,
-          height: `${2 * value}px`,
-          borderRadius: `${2 * value}px`
-        }
-      }, [
-        div({
-          style: {
-            fontSize: `${0.5 * value}px`,
-            padding: '15% 15%'
-          }
-        }, 'Hallo Welt')
-      ])
-    ]))
+const view = state$ =>
+  state$.map(([value, childVDom]) =>
+    div([childVDom, CircleDiv(value, "#ff00ff", "hello world")])
+  )
 
 const main = sources => {
   const props$ = xs.of({
-    label: 'Radius', unit: 'px', min: 10, max: 300, value: 100
+    label: "Radius",
+    unit: "px",
+    min: 10,
+    max: 300,
+    value: 100
   })
 
   const rangeSlider = LabeledSlider({
@@ -46,7 +35,7 @@ const main = sources => {
 }
 
 const drivers = {
-  DOM: makeDOMDriver("#app"),
+  DOM: makeDOMDriver("#app")
 }
 
 run(main, drivers)
