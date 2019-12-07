@@ -1,0 +1,21 @@
+{
+  "name": "apps-are-components-bmi-calc",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.html",
+  "scripts": {
+    "start": "parcel index.html --open",
+    "build": "parcel build index.html"
+  },
+  "dependencies": {
+    "@cycle/dom": "22.4.0",
+    "@cycle/run": "5.4.0",
+    "xstream": "11.11.0"
+  },
+  "devDependencies": {
+    "@babel/core": "7.2.0",
+    "parcel-bundler": "^1.6.1",
+    "css-modules": "0.3.0"
+  },
+  "keywords": []
+}
