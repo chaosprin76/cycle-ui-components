@@ -41,9 +41,7 @@ const view = state$ =>
 const main = sources => {
   const actions$ = intent(sources.DOM)
   const state$ = model(actions$, sources.props)
-  state$.map(state => {
-    return state
-  })
+
   const vnode$ = view(state$)
 
   return {

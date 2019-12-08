@@ -4,13 +4,19 @@ import { makeDOMDriver, div } from "@cycle/dom"
 import xs from "xstream"
 import LabeledSlider from "./components/labeled-slider"
 import CircleDiv from "./view-only-comps/circled-div"
+import LabeledTextField from "./components/labeled-text-field"
 
 const view = state$ =>
-  state$.map(([value, childVDom]) =>
-    div([childVDom, CircleDiv(value, "#ff00ff", "hello world")])
+  state$.map(
+    ([radiusInputValue, radiusInputDom, textFieldValue, textFieldDom]) =>
+      div([
+        radiusInputDom,
+        textFieldDom,
+        CircleDiv(radiusInputValue, "#ff00ff", textFieldValue)
+      ])
   )
 
-const main = sources => {
+const RadiusInput = domSource => {
   const props$ = xs.of({
     label: "Radius",
     unit: "px",
@@ -19,14 +25,34 @@ const main = sources => {
     value: 100
   })
 
-  const rangeSlider = LabeledSlider({
-    DOM: sources.DOM,
+  return LabeledSlider({
+    DOM: domSource,
     props: props$
   })
+}
 
-  const childVDom$ = rangeSlider.DOM
-  const childValue$ = rangeSlider.value
-  const state$ = xs.combine(childValue$, childVDom$)
+const ContentInput = domSources => {
+  const props$ = xs.of({
+    label: "Content",
+    value: "more content"
+  })
+
+  return LabeledTextField({
+    DOM: domSources,
+    props: props$
+  })
+}
+
+const main = sources => {
+  const radiusInput = RadiusInput(sources.DOM)
+  const contentInput = ContentInput(sources.DOM)
+  console.log(contentInput)
+  const state$ = xs.combine(
+    radiusInput.value,
+    radiusInput.DOM,
+    contentInput.value,
+    contentInput.DOM
+  )
   const vDom$ = view(state$)
 
   return {
