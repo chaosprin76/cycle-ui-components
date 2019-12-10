@@ -1,4 +1,5 @@
 import xs from "xstream"
+import { pre } from "@cycle/dom"
 
 /**
  *
@@ -36,6 +37,12 @@ const model = actions =>
       actions.messageInput.DOM,
       actions.messageInput.value,
       actions.socket
+        .filter(msg => msg.type === "message")
+        .fold((prev, msg) => {
+          prev.push(msg)
+          console.log(prev)
+          return prev
+        }, [])
     )
     .map(
       ([radiusDOM, radiusVal, messageInputDOM, messageInputVal, socket]) => ({
