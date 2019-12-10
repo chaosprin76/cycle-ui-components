@@ -1,67 +1,63 @@
 import "./styles.css"
 import { run } from "@cycle/run"
-import { makeDOMDriver, div } from "@cycle/dom"
-import xs from "xstream"
-import LabeledSlider from "./components/labeled-slider"
-import CircleDiv from "./view-only-comps/circled-div"
-import LabeledTextField from "./components/labeled-text-field"
-
-const view = state$ =>
-  state$.map(
-    ([radiusInputValue, radiusInputDom, textFieldValue, textFieldDom]) =>
-      div([
-        radiusInputDom,
-        textFieldDom,
-        CircleDiv(radiusInputValue, "#ff00ff", textFieldValue)
-      ])
-  )
-
-const RadiusInput = domSource => {
-  const props$ = xs.of({
-    label: "Radius",
-    unit: "px",
-    min: 10,
-    max: 300,
-    value: 100
-  })
-
-  return LabeledSlider({
-    DOM: domSource,
-    props: props$
-  })
-}
-
-const ContentInput = domSources => {
-  const props$ = xs.of({
-    label: "Content",
-    value: "more content"
-  })
-
-  return LabeledTextField({
-    DOM: domSources,
-    props: props$
-  })
-}
+import { makeDOMDriver } from "@cycle/dom"
+import makeSocketDriver from "./drivers/socket-io"
+import view from "./view"
+import intent from "./intent"
+import model from "./model"
+import sampleCombine from "xstream/extra/sampleCombine"
 
 const main = sources => {
-  const radiusInput = RadiusInput(sources.DOM)
-  const contentInput = ContentInput(sources.DOM)
-  console.log(contentInput)
-  const state$ = xs.combine(
-    radiusInput.value,
-    radiusInput.DOM,
-    contentInput.value,
-    contentInput.DOM
-  )
+  const actions$ = intent(sources, {
+    message: {
+      label: "Message",
+      value: ""
+    },
+    radius: {
+      label: "Radius",
+      unit: "px",
+      min: 30,
+      max: 250,
+      value: 70
+    }
+  })
+
+  const state$ = model(actions$)
+
   const vDom$ = view(state$)
 
+  const click$ = sources.DOM.select(".message-send")
+    .events("click")
+    .mapTo({ type: "click", payload: null })
+    .startWith(null)
+
+  const msgval$ = state$.map(state => ({
+    type: "message",
+    payload: state.messageInputVal
+  }))
+
+  const message$ = click$.compose(sampleCombine(msgval$)).map(msg => {
+    return msg[1]
+  })
+
+  const sockOut$ = sources.socket
+    .startWith()
+    .map(() => message$.map(msg => msg))
+    .flatten()
+    .startWith({
+      type: "some",
+      payload: ""
+    })
+
   return {
-    DOM: vDom$
+    DOM: vDom$,
+    socket: sockOut$
   }
 }
 
 const drivers = {
-  DOM: makeDOMDriver("#app")
+  DOM: makeDOMDriver("#app"),
+  socket: makeSocketDriver("https://z5pnf.sse.codesandbox.io/messenger")
 }
 
 run(main, drivers)
