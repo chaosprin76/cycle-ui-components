@@ -41,13 +41,9 @@ const main = sources => {
   })
 
   const sockOut$ = sources.socket
-    .startWith()
+    .startWith({ type: "init", payload: null })
     .map(() => message$.map(msg => msg))
     .flatten()
-    .startWith({
-      type: "some",
-      payload: ""
-    })
 
   return {
     DOM: vDom$,

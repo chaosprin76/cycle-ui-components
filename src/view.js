@@ -1,5 +1,5 @@
 import CircleDiv from "./view-only-comps/circled-div"
-import { div, button, h1 } from "@cycle/dom"
+import { div, button, h1, ul, li } from "@cycle/dom"
 
 const view = state$ => {
   return state$.map(state => {
@@ -9,7 +9,7 @@ const view = state$ => {
       state.messageInputDOM,
       CircleDiv(state.radiusVal, "#f0f", state.messageInputVal),
       button(".message-send", "send"),
-      div(".messages", [state.socket.payload])
+      ul(state.socket.map(msg => li(msg.payload)))
     ])
   })
 }

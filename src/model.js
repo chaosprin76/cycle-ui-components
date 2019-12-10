@@ -1,5 +1,4 @@
 import xs from "xstream"
-import { pre } from "@cycle/dom"
 
 /**
  *
@@ -18,17 +17,6 @@ import { pre } from "@cycle/dom"
  * @returns {Stream} socketInput$
  */
 
-const socketInput = actions =>
-  xs
-    .combine(actions.messageInput.value, actions.messageSend)
-    .map(([value, clickEvent]) => ({
-      type: "Message",
-      payload: value
-    }))
-    .map(msg => actions.messageSocket.map(() => msg))
-    .flatten()
-    .startWith(null)
-
 const model = actions =>
   xs
     .combine(
@@ -40,7 +28,6 @@ const model = actions =>
         .filter(msg => msg.type === "message")
         .fold((prev, msg) => {
           prev.push(msg)
-          console.log(prev)
           return prev
         }, [])
     )
