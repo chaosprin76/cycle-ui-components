@@ -1,24 +1,17 @@
-import LabeledSlider from "./components/labeled-slider"
 import LabeledTextField from "./components/labeled-text-field"
 import xs from "xstream"
+import MessageList from "./components/message-list"
 
 const intent = (sources, props) => {
   const messageProps$ = xs.of(props.message)
-
-  const radiusProps$ = xs.of(props.radius)
+  const messageList = MessageList(sources.socket)
 
   return {
-    radiusInput: LabeledSlider({
-      DOM: sources.DOM,
-      props: radiusProps$
-    }),
-
     messageInput: LabeledTextField({
       DOM: sources.DOM,
       props: messageProps$
     }),
-
-    socket: sources.socket
+    messageList
   }
 }
 

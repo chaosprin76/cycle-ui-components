@@ -5,45 +5,32 @@ import makeSocketDriver from "./drivers/socket-io"
 import view from "./view"
 import intent from "./intent"
 import model from "./model"
-import sampleCombine from "xstream/extra/sampleCombine"
+import MessageSender from "./components/message-sender"
+
+const MESSAGE_PROPS = {
+  label: "Message",
+  value: ""
+}
 
 const main = sources => {
   const actions$ = intent(sources, {
-    message: {
-      label: "Message",
-      value: ""
-    },
-    radius: {
-      label: "Radius",
-      unit: "px",
-      min: 30,
-      max: 250,
-      value: 70
-    }
+    message: MESSAGE_PROPS
   })
 
   const state$ = model(actions$)
 
+  const sockOut$ = MessageSender(
+    {
+      input: state$.map(state => state.messageInputVal),
+      source: sources.socket
+    },
+    {
+      source: sources.DOM.select(".message-send"),
+      evt: "click"
+    }
+  ).socket
+
   const vDom$ = view(state$)
-
-  const click$ = sources.DOM.select(".message-send")
-    .events("click")
-    .mapTo({ type: "click", payload: null })
-    .startWith(null)
-
-  const msgval$ = state$.map(state => ({
-    type: "message",
-    payload: state.messageInputVal
-  }))
-
-  const message$ = click$.compose(sampleCombine(msgval$)).map(msg => {
-    return msg[1]
-  })
-
-  const sockOut$ = sources.socket
-    .startWith({ type: "init", payload: null })
-    .map(() => message$.map(msg => msg))
-    .flatten()
 
   return {
     DOM: vDom$,
