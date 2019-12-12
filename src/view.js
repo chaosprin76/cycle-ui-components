@@ -6,7 +6,8 @@ const view = state$ => {
       h1("Weirdo chat"),
       state.messageInputDOM,
       button(".message-send", "send"),
-      state.messageList
+      state.messageList,
+      state.bmiCalc
     ])
   })
 }

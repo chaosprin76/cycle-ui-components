@@ -1,5 +1,6 @@
 import { div, label, input } from "@cycle/dom"
 import styles from "./styles.styl"
+import toLower from "ramda/es/toLower"
 
 const intent = domSource =>
   domSource
@@ -25,7 +26,7 @@ const model = (actions$, props$) =>
 
 const view = state$ =>
   state$.map(state =>
-    div(`.${styles.labeledSlider}`, [
+    div(`.labeled-slider.${styles.labeledSlider}.${toLower(state.label)}`, [
       label(`${state.label}: ${state.value}`),
       input(".slider", {
         attrs: {
@@ -38,7 +39,7 @@ const view = state$ =>
     ])
   )
 
-const main = sources => {
+const LabeledSlider = sources => {
   const actions$ = intent(sources.DOM)
   const state$ = model(actions$, sources.props)
 
@@ -50,4 +51,4 @@ const main = sources => {
   }
 }
 
-export default main
+export default LabeledSlider

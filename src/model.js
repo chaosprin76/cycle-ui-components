@@ -5,13 +5,15 @@ const model = actions$ =>
     .combine(
       actions$.messageInput.DOM,
       actions$.messageInput.value,
-      actions$.messageList.DOM
+      actions$.messageList.DOM,
+      actions$.bmiCalc.DOM
     )
-    .map(([messageInputDOM, messageInputVal, messageList]) => {
+    .map(([messageInputDOM, messageInputVal, messageList, bmiCalc]) => {
       return {
         messageInputDOM,
         messageInputVal,
-        messageList
+        messageList,
+        bmiCalc
       }
     })
 

@@ -12,14 +12,8 @@ const MESSAGE_PROPS = {
   value: ""
 }
 
-const main = sources => {
-  const actions$ = intent(sources, {
-    message: MESSAGE_PROPS
-  })
-
-  const state$ = model(actions$)
-
-  const sockOut$ = MessageSender(
+const sockOut = (state$, sources) =>
+  MessageSender(
     {
       input: state$.map(state => state.messageInputVal),
       source: sources.socket
@@ -30,6 +24,13 @@ const main = sources => {
     }
   ).socket
 
+const main = sources => {
+  const actions$ = intent(sources, {
+    message: MESSAGE_PROPS
+  })
+
+  const state$ = model(actions$)
+  const sockOut$ = sockOut(state$, sources)
   const vDom$ = view(state$)
 
   return {
