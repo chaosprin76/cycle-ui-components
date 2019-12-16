@@ -15,14 +15,14 @@ const MESSAGE_PROPS = {
 const sockOut = (state$, sources) =>
   MessageSender(
     {
-      input: state$.map(state => state.messageInputVal),
+      input: state$.map(state => state.value),
       source: sources.socket
     },
     {
       source: sources.DOM.select(".message-send"),
       evt: "click"
     }
-  ).socket
+  ).socket.remember()
 
 const main = sources => {
   const actions$ = intent(sources, {

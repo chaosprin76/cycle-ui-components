@@ -1,6 +1,10 @@
 import xs from "xstream"
 import LabeledSlider from "../labeled-slider"
 import { div, h2 } from "@cycle/dom"
+import isolate from "@cycle/isolate"
+
+const WeightSlider = isolate(LabeledSlider, "weight")
+const HeightSlider = isolate(LabeledSlider, "height")
 
 const BmiCalc = domSources => {
   const weightProps$ = xs.of({
@@ -21,8 +25,8 @@ const BmiCalc = domSources => {
   const weightSources = { DOM: domSources, props: weightProps$ }
   const heightSources = { DOM: domSources, props: heightProps$ }
 
-  const weightSlider = LabeledSlider(weightSources)
-  const heightSlider = LabeledSlider(heightSources)
+  const weightSlider = WeightSlider(weightSources)
+  const heightSlider = HeightSlider(heightSources)
 
   const bmi$ = xs
     .combine(weightSlider.value, heightSlider.value)
@@ -30,6 +34,7 @@ const BmiCalc = domSources => {
       const heightMeters = height * 0.01
       return Math.round(weight / (heightMeters * heightMeters))
     })
+    .remember()
 
   const vdom$ = xs
     .combine(bmi$, weightSlider.DOM, heightSlider.DOM)

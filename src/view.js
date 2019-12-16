@@ -1,14 +1,17 @@
-import { div, button, h1 } from "@cycle/dom"
+import { div, button, h1, header } from "@cycle/dom"
 
 const view = state$ => {
   return state$.map(state => {
     return div(".main", [
-      h1("Weirdo chat"),
-      state.messageInputDOM,
-      button(".message-send", "send"),
-      state.messageList,
-      state.bmiCalc
+      header(h1("Weirdo chat")),
+      div(".message-sender", [
+        state.messageInputDOM,
+        button(".message-send", "send")
+      ]),
+      div(".bmi-calculator", [state.bmiCalc, button(".message-send", "Send")]),
+      state.messageList
     ])
   })
 }
+
 export default view

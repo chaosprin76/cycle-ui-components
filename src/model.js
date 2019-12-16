@@ -1,20 +1,27 @@
 import xs from "xstream"
 
-const model = actions$ =>
-  xs
+const bmiMsg = bmi => `My BMI is ${bmi}`
+
+const model = actions$ => {
+  const value$ = xs.merge(
+    actions$.messageInput.value,
+    actions$.bmiCalc.value.map(bmiMsg)
+  )
+
+  return xs
     .combine(
       actions$.messageInput.DOM,
-      actions$.messageInput.value,
       actions$.messageList.DOM,
-      actions$.bmiCalc.DOM
+      actions$.bmiCalc.DOM,
+      value$
     )
-    .map(([messageInputDOM, messageInputVal, messageList, bmiCalc]) => {
+    .map(([messageInputDOM, messageList, bmiCalc, value]) => {
       return {
         messageInputDOM,
-        messageInputVal,
         messageList,
-        bmiCalc
+        bmiCalc,
+        value
       }
     })
-
+}
 export default model
