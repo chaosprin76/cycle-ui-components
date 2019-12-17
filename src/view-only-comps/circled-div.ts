@@ -1,6 +1,6 @@
-import { div } from "@cycle/dom"
+import { div, VNode } from "@cycle/dom"
 
-const CircleDiv = (radius, bg, content) =>
+const CircleDiv = (radius: number, bg: number, content: string): VNode =>
   div(
     {
       style: {
