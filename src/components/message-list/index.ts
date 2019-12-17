@@ -1,11 +1,7 @@
 import { ul, li, VNode } from "@cycle/dom"
 import { Stream } from "xstream"
 import { map } from "ramda"
-
-type Message = {
-  type: string
-  payload: string
-}
+import { Message } from "./types"
 
 const model = (socket$: Stream<Message>): Stream<Array<string>> =>
   socket$
