@@ -1,30 +1,20 @@
 import "./styles.css"
 import { run } from "@cycle/run"
-import { makeDOMDriver, DOMSource, VNode } from "@cycle/dom"
+import { makeDOMDriver } from "@cycle/dom"
 import makeSocketDriver from "./drivers/socket-io"
 import view from "./view"
 import intent from "./intent"
 import model from "./model"
 import MessageSender from "./components/message-sender"
 import { Stream, MemoryStream } from "xstream"
+import { Sinks, Sources, MessageProps } from "./types"
 
-const MESSAGE_PROPS = {
+const MESSAGE_PROPS: MessageProps = {
   label: "Message",
   value: ""
 }
 
-type Sources = {
-  DOM: DOMSource
-  socket: object
-  value: Stream<object>
-}
-
-type Sinks = {
-  DOM: Stream<VNode>
-  socket: Stream<any>
-}
-
-const sockOut = <T>(state$: Stream<any>, sources: any): MemoryStream<T> =>
+const sockOut = <T>(state$: Stream<any>, sources: Sources): MemoryStream<T> =>
   MessageSender(
     {
       input: state$.map(state => state.value),
