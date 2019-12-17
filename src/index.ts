@@ -6,15 +6,15 @@ import view from "./view"
 import intent from "./intent"
 import model from "./model"
 import MessageSender from "./components/message-sender"
-import { Stream, MemoryStream } from "xstream"
-import { Sinks, Sources, MessageProps } from "./types"
+import { MemoryStream } from "xstream"
+import { Sinks, Sources, MessageProps, State$ } from "./types"
 
 const MESSAGE_PROPS: MessageProps = {
   label: "Message",
   value: ""
 }
 
-const sockOut = <T>(state$: Stream<any>, sources: Sources): MemoryStream<T> =>
+const sockOut = <T>(state$: State$, sources: Sources): MemoryStream<T> =>
   MessageSender(
     {
       input: state$.map(state => state.value),
@@ -24,7 +24,7 @@ const sockOut = <T>(state$: Stream<any>, sources: Sources): MemoryStream<T> =>
       source: sources.DOM.select(".message-send"),
       evt: "click"
     }
-  ).socket.remember()
+  ).socket
 
 const main = (sources: any): Sinks => {
   const actions$ = intent(sources, {
