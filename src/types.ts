@@ -44,3 +44,8 @@ export type State = {
 }
 
 export type State$ = Stream<State>
+
+export type DOMComponent = {
+  DOM: Stream<VNode>
+  value: Stream<number>
+}

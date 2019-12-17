@@ -11,6 +11,9 @@
     "@cycle/dom": "22.4.0",
     "@cycle/isolate": "5.2.0",
     "@cycle/run": "5.4.0",
+    "@types/css-loader": "latest",
+    "@types/ramda": "0.26.38",
+    "@types/stylus": "0.48.31",
     "ramda": "0.26.1",
     "socket.io-client": "2.3.0",
     "xstream": "11.11.0"
